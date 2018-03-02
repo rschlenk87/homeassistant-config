@@ -1,7 +1,9 @@
-*
 !*.yaml
 !scenes
 !.gitignore
 secrets.yaml
 known_devices.yaml
-home-assistant*
+home-assistant.log
+home-assistant_v2.db
+home-assistant_v2.db-shm
+deps
