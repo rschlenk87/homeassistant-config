@@ -1,0 +1,287 @@
+homeassistant:
+  # Name of the location where Home Assistant is running
+  name: Rumpelkammer
+  # Location required to calculate the time the sun rises and sets
+  latitude: 52.42190513210631
+  longitude: 10.792475468926387
+  # Impacts weather/sunrise data (altitude above sea level in meters)
+  elevation: 63
+  # metric for Metric, imperial for Imperial
+  unit_system: metric
+  # Pick yours from here: 
+  # http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+  time_zone: Europe/Berlin
+  # Customization file
+  customize: !include customize.yaml 
+zone:
+  - name: Arbeit
+    latitude: 52.4492591
+    longitude: 10.7799785
+    icon: mdi:worker
+    radius: 250
+  - name: Hotte
+    latitude: 52.424158
+    longitude: 10.795155
+    icon: mdi:human-greeting
+    radius: 50
+  - name: Tor 17
+    latitude: 52.429237
+    longitude: 10.781666
+    radius: 150
+    icon: mdi:gate
+# Show links to resources in log and frontend introduction: Enables the 
+# frontend
+frontend:
+  themes:
+    dark:
+   # Main colors that can be changed
+      primary-color: "#03A9F4"
+      disabled-text-color: "#545454"
+      divider-color: "rgba(255, 255, 255, 0.12)"
+      paper-card-background-color: "#4e4e4e"
+      paper-grey-200: "#191919"
+      paper-item-icon-color: "#d3d3d3"
+      paper-listbox-background-color: "#202020"
+      paper-listbox-color: "#FFFFFF"      
+      primary-background-color: "#303030"
+      primary-text-color: "#cfcfcf"      
+      secondary-background-color: "#2b2b2b"
+      secondary-text-color: "#04a7bc"
+    # Colors based on variables, see above
+      label-badge-background-color: "var(--secondary-background-color)"
+      label-badge-text-color: "var(--text-primary-color)"
+      paper-card-header-color: "#var(--paper-item-icon-color)"
+      paper-grey-50: "var(--primary-text-color)"
+      paper-item-icon-active-color: "var(--primary-color)"
+      paper-item-icon_-_color: "var(--primary-text-color)"
+      paper-slider-active-color: "var(--primary-color)"
+      paper-slider-knob-color: "var(--primary-color)"
+      paper-slider-knob-start-color: "var(--primary-color)"
+      paper-slider-pin-color: "var(--primary-color)"
+      paper-slider-secondary-color: "var(--light-primary-color)"     
+      paper-toggle-button-checked-ink-color: "var(--dark-primary-color)"
+      paper-toggle-button-checked-button-color: "var(--primary-color)"
+      paper-toggle-button-checked-bar-color: "var(--light-primary-color)"
+      paper-toggle-button-unchecked-bar-color: "var(--primary-text-color)"
+   # Enables configuration UI
+ios:
+  health_check: true
+  push_categories:
+    - name: Generic
+      identifier: 'GENERIC'
+cloud:
+  alexa:
+    filter:
+      include_entities:
+        - switch.livingroom_ambient
+        - switch.livingroom_blueled
+        - switch.kitchen_ambient
+    entity_config:
+      switch.livingroom_ambient:
+        display_categories: LIGHT
+        name: LED-Spots
+      switch.livingroom_blueled:
+        display_categories: LIGHT
+        name: Lichterkette
+      switch.kitchen_ambient:
+        display_categories: LIGHT
+        name: Einbauküche
+recorder:
+  purge_keep_days: 5
+  purge_interval: 2
+logger:
+  default: warn
+  logs:
+    urllib3.connectionpool: fatal
+logbook:
+  include:
+    domains:
+      - switch
+      - device_tracker
+      - automation
+history:
+  include:
+    domains:
+      - switch
+      - device_tracker
+    entities:
+      - sun.sun
+      - sensor.weather_symbol
+      - sensor.weather_temperature
+      - sensor.weather_humidity
+      - sensor.weather_pressure
+      - sensor.weather_wind_speed
+      - sensor.weather_wind_direction
+      - sensor.gurke_v3_battery_level
+      - sensor.gurke_v3_battery_state
+      - sensor.gurke_v25_battery_level
+      - sensor.gurke_v25_battery_state
+config:
+http:
+  # Secrets are defined in the file secrets.yaml
+    api_password: !secret http_password
+  # Uncomment this if you are using SSL/TLS, running in Docker 
+  # container, etc. base_url: example.duckdns.org:8123
+    server_port: 8123 
+    #ssl_certificate: /home/pi/duckdns/dehydrated/certs/rumpelkammer.duckdns.org/fullchain.pem
+    #ssl_key: /home/pi/duckdns/dehydrated/certs/rumpelkammer.duckdns.org/privkey.pem
+    base_url: https://homeassistant.rumpelkammer.duckdns.org:443
+# Checks for available updates Note: This component will send some 
+# information about your system to the developers to assist with 
+# development of Home Assistant. For more information, please see: 
+# https://home-assistant.io/blog/2016/10/25/explaining-the-updater/
+updater:
+    include_used_components: true 
+# Discover some devices automatically
+#discovery:
+# Allows you to issue voice commands from the frontend in enabled 
+# browsers
+conversation:
+# Enables a map showing the location of tracked devices
+map:
+# Track the sun
+sun:
+device_tracker:
+  - platform: tile
+    username: iPhoneRS87@web.de
+    password: D0rma1!s4ssetcob
+    monitored_variables:
+      - TILE
+sensor:
+  - platform: deutsche_bahn
+    from: Kästorf IT City Backend, Wolfsburg
+    to: VW Tor 17, Wolfsburg
+  - platform: deutsche_bahn
+    from: VW Tor 17, Wolfsburg
+    to: Kästorf IT City Frontend, Wolfsburg
+  - platform: dwd_weather_warnings
+    name: Weather Warnings
+    region_name: Stadt Wolfsburg
+  - platform: yr
+    name: Weather
+    monitored_conditions:
+      - symbol
+      - temperature
+      - humidity
+      - pressure
+      - windSpeed
+      - windDirection
+  - platform: systemmonitor
+    resources:
+      - type: last_boot
+      - type: since_last_boot
+      - type: load_1m
+      - type: load_5m
+      - type: load_15m
+      - type: processor_use
+      - type: memory_use_percent
+      - type: memory_use
+      - type: memory_free
+      - type: swap_use_percent
+      - type: swap_use
+      - type: swap_free
+      - type: disk_use_percent
+        arg: / 
+      - type: disk_use
+        arg: /
+      - type: disk_free
+        arg: /
+      - type: ipv4_address
+        arg: eth0
+      - type: network_in
+        arg: eth0
+      - type: network_out
+        arg: eth0
+      - type: packets_in
+        arg: eth0
+      - type: packets_out 
+        arg: eth0
+# Text to speech
+tts:
+  - platform: google
+    language: 'de'
+group: !include groups.yaml 
+automation: !include automations.yaml 
+script: !include scripts.yaml
+android_ip_webcam:
+  - host: 192.168.2.30
+    name: Balcony Camera
+  - host: 192.168.2.40
+    name: Kitchen Camera
+camera:
+  - platform: mjpeg
+    name: Pi3Car
+    mjpeg_url: http://192.168.2.3:8080/?action=stream
+  - platform: mjpeg
+    authentication: basic
+    name: Living Room Camera
+    mjpeg_url: http://192.168.2.5:8081/video.mjpg
+    username: !secret cam_user
+    password: !secret cam_password
+  - platform: generic
+    name: gurke_v3
+    still_image_url: https://maps.googleapis.com/maps/api/staticmap?center={{ states.device_tracker.gurke_v3.attributes.latitude }},{{ states.device_tracker.gurke_v3.attributes.longitude }}&zoom=17&size=500x400&scale=2&maptype=hybrid&markers=color:blue%7Clabel:P%7C{{ states.device_tracker.gurke_v3.attributes.latitude }},{{ states.device_tracker.gurke_v3.attributes.longitude }}
+    limit_refetch_to_url_change: true
+  - platform: generic
+    name: gurke_v25
+    still_image_url: https://maps.googleapis.com/maps/api/staticmap?center={{ states.device_tracker.gurke_v25.attributes.latitude }},{{ states.device_tracker.gurke_v25.attributes.longitude }}&zoom=17&size=500x400&scale=2&maptype=hybrid&markers=color:blue%7Clabel:P%7C{{ states.device_tracker.gurke_v25.attributes.latitude }},{{ states.device_tracker.gurke_v25.attributes.longitude }}
+    limit_refetch_to_url_change: true
+  - platform: generic
+    name: laptop
+    still_image_url: https://maps.googleapis.com/maps/api/staticmap?center={{ states.device_tracker.tile_laptop.attributes.latitude }},{{ states.device_tracker.tile_laptop.attributes.longitude }}&zoom=17&size=500x400&scale=2&maptype=hybrid&markers=color:blue%7Clabel:P%7C{{ states.device_tracker.tile_laptop.attributes.latitude }},{{ states.device_tracker.tile_laptop.attributes.longitude }}
+    limit_refetch_to_url_change: true
+  - platform: generic
+    name: schlussel
+    still_image_url: https://maps.googleapis.com/maps/api/staticmap?center={{ states.device_tracker.tile_schlussel.attributes.latitude }},{{ states.device_tracker.tile_schlussel.attributes.longitude }}&zoom=17&size=500x400&scale=2&maptype=hybrid&markers=color:red%7Clabel:P%7C{{ states.device_tracker.tile_schlussel.attributes.latitude }},{{ states.device_tracker.tile_schlussel.attributes.longitude }}
+    limit_refetch_to_url_change: true
+  - platform: generic
+    name: ersatzschlussel
+    still_image_url: https://maps.googleapis.com/maps/api/staticmap?center={{ states.device_tracker.tile_ersatzschlussel.attributes.latitude }},{{ states.device_tracker.tile_ersatzschlussel.attributes.longitude }}&zoom=17&size=500x400&scale=2&maptype=hybrid&markers=color:red%7Clabel:P%7C{{ states.device_tracker.tile_ersatzschlussel.attributes.latitude }},{{ states.device_tracker.tile_ersatzschlussel.attributes.longitude }}
+    limit_refetch_to_url_change: true     
+  - platform: generic
+    name: Meteogramm
+    still_image_url: https://www.yr.no/place/Germany/Lower_Saxony/Wolfsburg/meteogram.svg
+    content_type: 'image/svg+xml'
+  - platform: generic
+    still_image_url: http://api.sat24.com/animated/DE/visual/2/W_dot_%20Europe%20Standard%20Time/5053188
+    name: Cloudiness
+  - platform: generic
+    still_image_url: http://api.sat24.com/animated/DE/rainTMC/2/W_dot_%20Europe%20Standard%20Time/220026
+    name: Rain
+switch:
+  - platform: rpi_rf
+    gpio: 17
+    switches:
+      livingroom_ambient:
+        code_on: 1115473
+        code_off: 1115476
+      kitchen_ambient:
+        code_on: 1118545
+        code_off: 1118548
+      livingroom_blueled:
+        code_on: 1119313
+        code_off: 1119316
+      outdoor:
+        code_on: 1119505
+        code_off: 1119508
+  - platform: wake_on_lan
+    mac_address: "80-C1-6E-E4-85-15"
+panel_iframe:
+  speedport:
+    icon: mdi:router-wireless
+    title: Speedport W921V
+    url: https://speedport.rumpelkammer.duckdns.org/
+  thinvnc:
+    icon: mdi:desktop-classic
+    title: ThinVNC 
+    url: https://thinvnc.rumpelkammer.duckdns.org/
+  haconfig:
+    icon: mdi:wrench
+    title: Konfigurator
+    url: https://haconfig.rumpelkammer.duckdns.org/
+panel_custom:
+  - name: floorplan
+    sidebar_title: Raumplan
+    sidebar_icon: mdi:home
+    url_path: floorplan
+    config: !include floorplan.yaml

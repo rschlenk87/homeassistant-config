@@ -1,0 +1,183 @@
+livingroom_light:
+   name: Wohnzimmer
+   entities:
+      - switch.livingroom_ambient
+      - switch.livingroom_blueled
+
+livingroom_webcam:
+   name: Kamera 
+   entities:
+      - camera.living_room_camera
+
+kitchen_light:
+   name: Küche
+   entities:
+      - switch.kitchen_ambient
+
+kitchen_webcam:
+   name: Kamera
+   entities:
+      - camera.kitchen_camera
+
+webcams:
+   name: Kameras
+   entities:
+      - camera.living_room_camera
+      - camera.kitchen_camera
+      - camera.balcony_camera
+      - camera.pi3car
+
+balcony_webcam:
+   name: Kamera
+   entities:
+      - camera.balcony_camera
+
+pi3car:
+   name: Pi3Car
+   entities:
+      - camera.pi3car
+
+gurke_v25:
+   name: iPhone SE
+   entities:
+      - sensor.gurke_v25_battery_level
+      - sensor.gurke_v25_battery_state
+      - camera.gurke_v25
+
+gurke_v3:
+   name: iPhone 7
+   entities:
+      - sensor.gurke_v3_battery_level
+      - sensor.gurke_v3_battery_state
+      - camera.gurke_v3
+     
+raspberrypi:
+   name: Raspberry Pi
+   entities:
+      - sensor.last_boot
+      - sensor.since_last_boot
+      - sensor.load_1m
+      - sensor.load_5m
+      - sensor.load_15m
+      - sensor.cpu_used
+      - sensor.ram_used_2
+      - sensor.ram_used
+      - sensor.ram_available
+      - sensor.swap_use_percent
+      - sensor.swap_use
+      - sensor.swap_free
+      - sensor.disk_used__2
+      - sensor.disk_used_
+      - sensor.disk_free_
+      - sensor.ipv4_address_eth0
+      - sensor.sent_eth0
+      - sensor.received_eth0
+      - sensor.packets_sent_eth0
+      - sensor.packets_received_eth0
+
+workstation:
+   name: HP Pro 3400 MT
+   entities:
+      - switch.wake_on_lan
+
+laptop:
+   name: tile
+   entities:
+      - device_tracker.tile_laptop
+      - camera.laptop
+      
+keys:
+   name: tile
+   entities:
+      - device_tracker.tile_schlussel
+      - camera.schlussel
+      - device_tracker.tile_ersatzschlussel
+      - camera.ersatzschlussel
+ 
+weather:
+   name: Wetter
+   entities:
+      - sun.sun
+      - sensor.weather_symbol
+      - sensor.weather_temperature
+      - sensor.weather_humidity
+      - sensor.weather_pressure
+      - sensor.weather_wind_speed
+      - sensor.weather_wind_direction
+      - sensor.weather_warnings_current_warning_level
+      - camera.meteogramm
+      - camera.cloudiness
+      - camera.rain
+      
+balcony_light:
+    name: Balkon
+    entities:
+      - switch.outdoor
+
+balcony_lights:
+    name: Beleuchtung
+    entities:
+      - switch.outdoor  
+
+default_view:
+    view: yes
+    icon: mdi:home
+    entities:
+      - group.lights_view
+      - group.weather
+      - group.webcams
+      - device_tracker.gurke_v3
+      - device_tracker.gurke_v25
+      - device_tracker.tile_laptop
+      - device_tracker.tile_schlussel
+      - device_tracker.tile_ersatzschlussel
+
+livingroom_view:
+   view: yes
+   name: Wohnzimmer
+   entities:
+      - group.livingroom_lights
+      - group.livingroom_webcam
+
+livingroom_lights:
+   name: Beleuchtung
+   entities:
+      - switch.livingroom_ambient
+      - switch.livingroom_blueled
+
+kitchen_view:
+   view: yes
+   name: Küche
+   entities:
+      - group.kitchen_lights
+      - group.kitchen_webcam
+
+kitchen_lights:
+   name: Beleuchtung
+   entities:
+      - switch.kitchen_ambient
+
+datacenter_view:
+   view: yes
+   name: Rechenzentrum
+   entities:
+      - group.gurke_v3
+      - group.gurke_v25
+      - group.workstation
+      - group.raspberrypi
+      - group.laptop
+      - group.keys
+
+balcony_view:
+   view: yes
+   name: Balkon
+   entities:
+      - group.balcony_lights
+      - group.balcony_webcam
+
+lights_view:
+  name: Funkschalter
+  entities:
+     - group.livingroom_light
+     - group.kitchen_light
+     - group.balcony_light

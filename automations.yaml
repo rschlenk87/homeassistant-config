@@ -1,0 +1,147 @@
+- action:
+  - alias: Switch Kitchen Ambient Off
+    data:
+      entity_id: switch.kitchen_ambient
+    service: switch.turn_off
+  - delay: 00:00:02
+  - alias: Switch Living Room Ambient Off
+    data:
+      entity_id: switch.livingroom_ambient
+    service: switch.turn_off
+  - delay: 00:00:02
+  - alias: Switch Living Room BlueLED Off
+    data:
+      entity_id: switch.livingroom_blueled
+    service: switch.turn_off
+  alias: Gehen
+  condition: []
+  id: '1509316134957'
+  trigger:
+  - entity_id: device_tracker.gurke_v3
+    from: home
+    platform: state
+    to: not_home
+- action:
+  - alias: Switch Living Room Ambient On
+    data:
+      entity_id: switch.livingroom_ambient
+    service: switch.turn_on
+  - delay: 00:00:02
+  - alias: Switch Living Room BlueLED On
+    data:
+      entity_id: switch.livingroom_blueled
+    service: switch.turn_on
+  - delay: 00:00:02
+  - alias: Switch Kitchen Ambient On
+    data:
+      entity_id: switch.kitchen_ambient
+    service: switch.turn_on
+  alias: Kommen
+  condition:
+  - after: sunset
+    before: sunrise
+    condition: sun
+  id: '1509318926134'
+  trigger:
+  - entity_id: device_tracker.gurke_v3
+    from: not_home
+    platform: state
+    to: home
+- action:
+  - data_template:
+      message: "Release {{ states.updater.updater.state }} steht jetzt zum Download bereit!"
+      title: 'Softwareupdate'
+    service: notify.ios_gurke_v3
+  alias: Update
+  condition: []
+  id: '1514142542216'
+  trigger:
+  - entity_id: updater.updater
+    platform: state
+- action:
+  - data_template:
+      message: |
+        {{ states.sensor.weather_warnings_current_warning_level.attributes["warning_1_description"] }}
+        {{ states.sensor.weather_warnings_current_warning_level.attributes["warning_1_instruction"] }}
+        Von: {{ states.sensor.weather_warnings_current_warning_level.attributes["warning_1_start"] }}
+        Bis: {{ states.sensor.weather_warnings_current_warning_level.attributes["warning_1_end"] }}
+      title: 'WARNUNG: {{ states.sensor.weather_warnings_current_warning_level.attributes["warning_1_name"] }}'
+    service: notify.ios_gurke_v3
+  alias: Unwetterwarnung
+  condition: []
+  id: '1514143807304'
+  trigger:
+  - above: '0'
+    entity_id: sensor.weather_warnings_current_warning_level
+    for:
+      minutes: 20
+    platform: numeric_state
+- alias: "Tiguan-Linie. Zuhause -> Arbeit"
+  trigger:
+    - platform: template
+      value_template: "{% if is_state('sensor.vw_tor_17_wolfsburg_to_kastorf_it_city_frontend_wolfsburg.attributes.ontime', 'true') %}true{% endif %}"
+  condition:
+    - condition: time
+      after: '07:00:00'
+      before: '08:30:00'
+      weekday:
+        - mon
+        - tue
+        - wed
+        - thu
+        - fri
+    - condition: state
+      entity_id: device_tracker.gurke_v3
+      state: Tor 17
+  action:
+    - service: notify.ios_gurke_v3
+      data:
+        title: "Tiguan-Linie zur IT-City"
+        message: |
+          Haltestelle: Tor 17
+          {{ states.sensor.vw_tor_17_wolfsburg_to_kastorf_it_city_frontend_wolfsburg.attributes.departure }} Uhr
+          {{ states.sensor.vw_tor_17_wolfsburg_to_kastorf_it_city_frontend_wolfsburg.attributes.next }} Uhr
+          {{ states.sensor.vw_tor_17_wolfsburg_to_kastorf_it_city_frontend_wolfsburg.attributes.next_on }} Uhr
+          
+        data:
+          push:
+            category: map
+          action_data:
+            latitude: "52.430795"
+            longitude: "10.781605"
+            shows_user_location: true
+            shows_traffic: true
+- alias: "Tiguan-Linie. Arbeit -> Zuhause"
+  trigger:
+    - platform: template
+      value_template: "{% if is_state('sensor.kastorf_it_city_backend_wolfsburg_to_vw_tor_17_wolfsburg.attributes.ontime', 'true') %}true{% endif %}"
+  condition:
+    - condition: time
+      after: '15:00:00'
+      before: '17:00:00'
+      weekday:
+        - mon
+        - tue
+        - wed
+        - thu
+        - fri
+    - condition: state
+      entity_id: device_tracker.gurke_v3
+      state: Arbeit
+  action:
+    - service: notify.ios_gurke_v3
+      data:
+        title: "Tiguan-Linie zum Tor 17"
+        message: |
+          Haltestelle: IT-City Frontend
+          {{ states.sensor.kastorf_it_city_backend_wolfsburg_to_vw_tor_17_wolfsburg.attributes.departure }} Uhr
+          {{ states.sensor.kastorf_it_city_backend_wolfsburg_to_vw_tor_17_wolfsburg.attributes.next }} Uhr
+          {{ states.sensor.kastorf_it_city_backend_wolfsburg_to_vw_tor_17_wolfsburg.attributes.next_on }} Uhr
+        data:
+          push:
+            category: map
+          action_data:
+            latitude: "52.450194"
+            longitude: "10.779273"
+            shows_user_location: true
+            shows_traffic: true

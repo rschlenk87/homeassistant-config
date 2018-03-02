@@ -1,0 +1,12 @@
+sensor.gurke_v25_battery_level:
+  platform: ios
+  unique_id: level_gurke_v25
+sensor.gurke_v25_battery_state:
+  platform: ios
+  unique_id: state_gurke_v25
+sensor.gurke_v3_battery_state:
+  platform: ios
+  unique_id: state_gurke_v3
+sensor.gurke_v3_battery_level:
+  platform: ios
+  unique_id: level_gurke_v3
